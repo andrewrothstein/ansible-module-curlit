@@ -12,7 +12,8 @@ def main() :
       dest = dict(required=True),
       mode = dict(required=False),
       owner = dict(required=False),
-      group = dict(required=False)
+      group = dict(required=False),
+      curlopts = dict(required=False)
     )
   )
 
@@ -23,8 +24,13 @@ def main() :
   changed = False
   if not isfile(dest) :
     changed = True
-    command = ["curl", "-sL", "-o", dest, url]
+    command = ["curl", "-sL", "-o", dest]
+    if (p['curlopts']) :
+      command.append(p['curlopts'].split())
+    command.append(url)
     subprocess.check_call(command)
+
+  if isfile(dest) :
     if (p['owner']) :
       owner = p['owner']
       if (p['group']) : owner += ':' + p['group']
